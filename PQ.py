@@ -29,7 +29,7 @@ def loadfile(datafile):
 def load_files(files):
     h5fs={}
     for i ,f in enumerate(sorted(files)):
-        print f
+        #print f
         h5fs['h5f_'+str(i)]=h5py.File(f,'r')
 
     #feats=np.concatenate([value['feats']for key,value in h5fs.items()])
@@ -62,14 +62,21 @@ def ccluster(n,batchs,db,out):
     #return label,centroid
 
 def invertFileList(coarse,h5fs):
-    print coarse['labels'].shape
-    lenn=coarse['labels'].shape
-    labell=np.concatenate([[value['labels']] for key,value in h5fs.items()])
-    print labell.shape   
-    print labell[:,0]    
+    Pq={}
+    print coarse['labels'].shape[0]
+    lenn=coarse['labels'].shape[0]
+    #labell=np.concatenate([[value['labels']] for key,value in h5fs.items()])
+    labell=np.concatenate([[h5fs['h5f_'+str(i)]['labels']] for i in range(8)])
+    for i in range(lenn):
+        if Pq.has_key(coarse['labels'][i]):
+            Pq[coarse['labels'][i]].append(labell[:,i] )
+        else:
+            Pq[coarse['labels'][i]]=[labell[:,i]]  
 
-def coarseQuantization(Q):
-    pass
+    print len(Pq) 
+    print Pq[0][0] 
+
+
 
 
 
@@ -80,12 +87,13 @@ if __name__=='__main__':
     path_data='data/*.pickle'
     datafile=glob.glob(path_data)
     datafiles,s=loadfile(datafile)
-    print len(datafiles),datafiles[1].shape,datafiles[0].shape
-    print s.shape,len(s)
+    #print len(datafiles),datafiles[1].shape,datafiles[0].shape
+    #print s.shape,len(s)
+    ####################################################################
     coarse=h5py.File('data/coarse.h5','r')   # get coarse centroid and label
     blocks=split_data(s,8,coarse=coarse)
-    print len(blocks), blocks[1].shape
-    
+    #print len(blocks), blocks[1].shape
+    ###################################################################
     out='/home/mysj/caffe_file/feats/'
     out_files=[]
     #coarseOut=os.path.join(out,'coarse.h5')
@@ -93,9 +101,9 @@ if __name__=='__main__':
 
     files=glob.glob('feats/*.h5')
     h5fs=load_files(files)
-    h5fs=sorted(h5fs.keys())
-    print h5fs['h5f_0']
-    #invertFileList(coarse,h5fs)
+    #print h5fs.keys()
+    
+    invertFileList(coarse,h5fs)
 
 
 
