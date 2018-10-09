@@ -17,6 +17,7 @@ import pickle,h5py,os
 import numpy as np 
 import multiprocessing
 from sklearn.cluster import MiniBatchKMeans
+# loadfile load pickle files 
 def loadfile(datafile):
     datafiles=[]
     for f in datafile:
@@ -25,7 +26,7 @@ def loadfile(datafile):
         data=np.concatenate([i for i in fff])
         datafiles.append(data)
     return datafiles,np.concatenate([item for item in datafiles])
-
+# load_files load h5 files.
 def load_files(files):
     h5fs={}
     for i ,f in enumerate(sorted(files)):
@@ -75,7 +76,7 @@ def invertFileList(coarse,h5fs):
 
     print len(Pq) 
     print Pq[0][0] 
-
+    return Pq
 
 
 
@@ -103,8 +104,10 @@ if __name__=='__main__':
     h5fs=load_files(files)
     #print h5fs.keys()
     
-    invertFileList(coarse,h5fs)
-
+    Pq=invertFileList(coarse,h5fs)
+    fflie=open('data/invertfile.pickle','wb')
+    pickle.dump(Pq,fflie)
+    fflie.close()
 
 
     """
