@@ -1,6 +1,7 @@
 """
 Update 2018.10.10
 merge function coarseQuantization() and compaireResult,in addition,assign images to different processes 
+use 8 processes to compute multi-images
 """
 import multiprocessing
 import glob,h5py
